@@ -37,8 +37,8 @@
 #![cfg_attr(not(test), no_std)]
 
 use embedded_hal::{
-    blocking::delay::{DelayMs, DelayUs},
-    digital::v2::{InputPin, OutputPin},
+    delay::DelayUs,
+    digital::{InputPin, OutputPin},
 };
 
 #[cfg(feature = "dwt")]
@@ -90,7 +90,7 @@ where
     /// Performs a reading of the sensor.
     pub fn perform_measurement<D>(&mut self, delay: &mut D) -> Result<Measurement, Error<E>>
     where
-        D: DelayUs<u16> + DelayMs<u16>,
+        D: DelayUs,
     {
         let mut data = [0u8; 5];
 
@@ -131,7 +131,7 @@ where
 
     fn perform_handshake<D>(&mut self, delay: &mut D) -> Result<(), Error<E>>
     where
-        D: DelayUs<u16> + DelayMs<u16>,
+        D: DelayUs,
     {
         // Set pin as floating to let pull-up raise the line and start the reading process.
         self.set_input()?;
@@ -153,7 +153,7 @@ where
 
     fn read_bit<D>(&mut self, delay: &mut D) -> Result<bool, Error<E>>
     where
-        D: DelayUs<u16> + DelayMs<u16>,
+        D: DelayUs,
     {
         let low = self.wait_for_pulse(true, delay)?;
         let high = self.wait_for_pulse(false, delay)?;
@@ -162,7 +162,7 @@ where
 
     fn wait_for_pulse<D>(&mut self, level: bool, delay: &mut D) -> Result<u32, Error<E>>
     where
-        D: DelayUs<u16> + DelayMs<u16>,
+        D: DelayUs,
     {
         let mut count = 0;
 
