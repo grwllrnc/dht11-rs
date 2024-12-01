@@ -37,7 +37,7 @@
 #![cfg_attr(not(test), no_std)]
 
 use embedded_hal::{
-    delay::DelayUs,
+    delay::DelayNs,
     digital::{InputPin, OutputPin},
 };
 
@@ -90,7 +90,7 @@ where
     /// Performs a reading of the sensor.
     pub fn perform_measurement<D>(&mut self, delay: &mut D) -> Result<Measurement, Error<E>>
     where
-        D: DelayUs,
+        D: DelayNs,
     {
         let mut data = [0u8; 5];
 
@@ -131,7 +131,7 @@ where
 
     fn perform_handshake<D>(&mut self, delay: &mut D) -> Result<(), Error<E>>
     where
-        D: DelayUs,
+        D: DelayNs,
     {
         // Set pin as floating to let pull-up raise the line and start the reading process.
         self.set_input()?;
@@ -153,7 +153,7 @@ where
 
     fn read_bit<D>(&mut self, delay: &mut D) -> Result<bool, Error<E>>
     where
-        D: DelayUs,
+        D: DelayNs,
     {
         let low = self.wait_for_pulse(true, delay)?;
         let high = self.wait_for_pulse(false, delay)?;
@@ -162,7 +162,7 @@ where
 
     fn wait_for_pulse<D>(&mut self, level: bool, delay: &mut D) -> Result<u32, Error<E>>
     where
-        D: DelayUs,
+        D: DelayNs,
     {
         let mut count = 0;
 
@@ -192,7 +192,7 @@ where
         self.gpio.set_low().map_err(Error::Gpio)
     }
 
-    fn read_line(&self) -> Result<bool, Error<E>> {
+    fn read_line(&mut self) -> Result<bool, Error<E>> {
         self.gpio.is_high().map_err(Error::Gpio)
     }
 }
