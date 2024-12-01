@@ -44,8 +44,8 @@ use embedded_hal::{
 #[cfg(feature = "dwt")]
 use cortex_m::peripheral::DWT;
 
-/// How long to wait for a pulse on the data line (in microseconds).
-const TIMEOUT_US: u16 = 1_000;
+/// How long to wait for a pulse on the data line (in nanoseconds).
+const TIMEOUT_NS: u32 = 1_000000;
 
 /// Error type for this crate.
 #[derive(Debug)]
@@ -171,7 +171,7 @@ where
 
         while self.read_line()? != level {
             count += 1;
-            if count > TIMEOUT_US {
+            if count > TIMEOUT_NS {
                 return Err(Error::Timeout);
             }
             delay.delay_us(1);
